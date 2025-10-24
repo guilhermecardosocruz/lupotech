@@ -1,0 +1,14 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+pnpm-debug.log*
+.env
+.env.*
+!.env.example
+.vscode/
+.idea/
