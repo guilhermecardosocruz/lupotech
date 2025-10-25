@@ -4,8 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#0a8a43",   // verde principal
-        secondary: "#f8fafc", // branco levemente acinzentado
+        primary: "#16a34a",   // verde
+        secondary: "#f8fafc", // fundo claro
+      },
+      borderRadius: {
+        xl: "0.75rem",
+        "2xl": "1rem",
       },
     },
   },
