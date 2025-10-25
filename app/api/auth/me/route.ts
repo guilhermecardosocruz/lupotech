@@ -6,7 +6,7 @@ import { readSession } from "@/lib/session";
 
 export async function GET() {
   try {
-    const sess = readSession();
+    const sess = await readSession();
     if (!sess) return NextResponse.json({ ok: false }, { status: 401 });
 
     const user = await prisma.user.findUnique({ where: { id: sess.sub } });

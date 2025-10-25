@@ -7,8 +7,7 @@ export const metadata = {
   title: "Serviços",
   description: "Aqui você soluciona o seu problema",
   manifest: "/manifest.webmanifest",
-  themeColor: "#16a34a",
-};
+  };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,3 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+// Viewport oficial (Next 15): themeColor deve ficar aqui
+export const viewport = {
+  themeColor: "#16a34a",
+};

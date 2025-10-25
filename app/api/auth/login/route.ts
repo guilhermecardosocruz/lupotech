@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Tipo de conta incorreto" }, { status: 401 });
     }
 
-    setSessionCookie({ sub: user.id, email: user.email, role: user.role as any, name: user.name });
+    await setSessionCookie({ sub: user.id, email: user.email, role: user.role as any, name: user.name });
     return NextResponse.json({ id: user.id, name: user.name, email: user.email, role: user.role }, { status: 200 });
   } catch (e) {
     console.error("login error", e);
