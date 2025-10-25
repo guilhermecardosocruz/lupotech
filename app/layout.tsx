@@ -1,7 +1,7 @@
 import "./globals.css";
 import React from "react";
-import RegisterSW from "@/components/RegisterSW";
-import AppHeader from "@/components/AppHeader";
+import RegisterSW from "../components/RegisterSW";
+import AppHeader from "../components/AppHeader";
 
 export const metadata = {
   title: "Serviços",
