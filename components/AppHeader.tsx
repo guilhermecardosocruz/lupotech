@@ -3,28 +3,40 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type User = { id: string; name?: string; role?: "CLIENTE" | "PRESTADOR" } | null;
+type Role = "CLIENTE" | "PRESTADOR";
+type User = { id: string; name?: string | null; email: string; role: Role } | null;
 
-export default function AppHeader(){
+export default function AppHeader() {
   const [user, setUser] = useState<User>(null);
+  const [loading, setLoading] = useState(true);
 
-  // Lê sessão e reage a mudanças (login/logout em outras abas ou na mesma)
-  function readSession(){
+  async function fetchMe(signal?: AbortSignal) {
     try {
-      const raw = localStorage.getItem("auth_user");
-      setUser(raw ? JSON.parse(raw) : null);
-    } catch { setUser(null); }
+      const res = await fetch("/api/auth/me", { cache: "no-store", signal });
+      if (!res.ok) { setUser(null); return; }
+      const data = await res.json().catch(() => null);
+      setUser(data?.user ?? null);
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => {
-    readSession();
-    const onStorage = (e: StorageEvent) => { if (e.key === "auth_user") readSession(); };
-    const onCustom  = () => readSession(); // "auth:update" custom
-    window.addEventListener("storage", onStorage);
-    window.addEventListener("auth:update", onCustom as any);
+    const ctrl = new AbortController();
+    fetchMe(ctrl.signal);
+
+    const onFocus = () => fetchMe();
+    const onVis = () => { if (document.visibilityState === "visible") fetchMe(); };
+
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVis);
+
     return () => {
-      window.removeEventListener("storage", onStorage);
-      window.removeEventListener("auth:update", onCustom as any);
+      ctrl.abort();
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVis);
     };
   }, []);
 
@@ -35,22 +47,21 @@ export default function AppHeader(){
         <span>Serviços</span>
       </div>
 
-      {/* Menu varia conforme sessão */}
-      {!user && (
+      {!loading && !user && (
         <nav className="auth-actions">
           <Link className="btn-outline" href="/login">Entrar</Link>
           <Link className="btn-solid" href="/register">Cadastrar</Link>
         </nav>
       )}
 
-      {user?.role === "CLIENTE" && (
+      {!loading && user?.role === "CLIENTE" && (
         <nav className="auth-actions">
           <Link className="btn-outline" href="/cliente/servicos">Serviços realizados</Link>
           <Link className="btn-solid" href="/logout">Sair</Link>
         </nav>
       )}
 
-      {user?.role === "PRESTADOR" && (
+      {!loading && user?.role === "PRESTADOR" && (
         <nav className="auth-actions">
           <Link className="btn-outline" href="/prestador/onboarding">Completar perfil</Link>
           <Link className="btn-solid" href="/logout">Sair</Link>

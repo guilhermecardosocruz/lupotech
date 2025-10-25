@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 type Role = "CLIENTE" | "PRESTADOR";
 
-export default function LoginPage(){
+export default function LoginPage() {
   const router = useRouter();
   const [role, setRole] = useState<Role>("CLIENTE");
   const [email, setEmail] = useState("");
@@ -15,37 +15,37 @@ export default function LoginPage(){
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // já logado? consulta sessão
+    let off = false;
     (async () => {
-      try{
+      try {
         const r = await fetch("/api/auth/me", { cache: "no-store" });
-        if (r.ok) {
-          const d = await r.json();
-          const u = d?.user;
-          if (u?.role === "PRESTADOR") router.replace("/prestador");
-          else if (u?.role === "CLIENTE") router.replace("/cliente");
+        if (r.ok && !off) {
+          const j = await r.json().catch(() => null);
+          const go = j?.user?.role === "PRESTADOR" ? "/prestador" : "/cliente";
+          if (j?.user) router.replace(go);
         }
-      }catch{}
+      } catch {}
     })();
+    return () => { off = true; };
   }, [router]);
 
-  async function onSubmit(e: React.FormEvent){
+  async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
     setLoading(true);
-    try{
-      const r = await fetch("/api/auth/login", {
+    try {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, role })
+        cache: "no-store",
+        body: JSON.stringify({ email, password, role }),
       });
-      const data = await r.json().catch(() => ({}));
-      if (!r.ok) { setErr(data?.error || "Credenciais inválidas"); return; }
-      if (data?.role === "PRESTADOR") router.push("/prestador");
-      else router.push("/cliente");
-    }catch{
-      setErr("Não foi possível autenticar.");
-    }finally{
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) { setErr(data?.error || "Falha no login"); return; }
+      router.replace(role === "PRESTADOR" ? "/prestador" : "/cliente");
+    } catch {
+      setErr("Erro de rede");
+    } finally {
       setLoading(false);
     }
   }

@@ -1,24 +1,32 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function OnboardingPrestador(){
+  const router = useRouter();
+
   useEffect(() => {
-    try{
-      const u = JSON.parse(localStorage.getItem("auth_user") || "null");
-      if (!u) window.location.replace("/login");
-      else if (u.role !== "PRESTADOR") window.location.replace("/cliente");
-    }catch{}
-  }, []);
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!r.ok) { router.replace("/login"); return; }
+        const j = await r.json().catch(()=>null);
+        if (!j?.user) { router.replace("/login"); return; }
+        if (j.user.role !== "PRESTADOR") { router.replace("/cliente"); return; }
+      } catch {
+        router.replace("/login");
+      }
+      if (cancelled) return;
+    })();
+    return () => { cancelled = true; };
+  }, [router]);
 
   const [bio, setBio] = useState(""); const [radius, setRadius] = useState(10); const [cats, setCats] = useState<string[]>([]);
   function toggleCat(c: string){ setCats(prev => prev.includes(c) ? prev.filter(x=>x!==c) : [...prev, c]); }
   function save(){
     try{
-      const u = JSON.parse(localStorage.getItem("auth_user") || "null");
-      const k = `provider_${u?.id || "anon"}`;
-      localStorage.setItem(k, JSON.stringify({ bio, radius, cats }));
       alert("Perfil salvo (simulado).");
     }catch{}
   }
@@ -26,8 +34,6 @@ export default function OnboardingPrestador(){
 
   return (
     <main style={{ maxWidth: 900, margin:"0 auto", padding:24 }}>
-      
-
       <h1 style={{ marginTop:12, marginBottom:8 }}>Completar perfil do prestador</h1>
       <section style={{ border:"1px solid #e5e7eb", borderRadius:16, padding:16, background:"#fff" }}>
         <label style={{ display:"block", fontWeight:600, marginBottom:6 }}>Biografia curta</label>
