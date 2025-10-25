@@ -15,10 +15,18 @@ export default function LoginPage(){
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    try{
-      const u = JSON.parse(localStorage.getItem("auth_user") || "null");
-      if (u?.role) router.replace(u.role === "PRESTADOR" ? "/prestador" : "/cliente");
-    }catch{}
+    // já logado? consulta sessão
+    (async () => {
+      try{
+        const r = await fetch("/api/auth/me", { cache: "no-store" });
+        if (r.ok) {
+          const d = await r.json();
+          const u = d?.user;
+          if (u?.role === "PRESTADOR") router.replace("/prestador");
+          else if (u?.role === "CLIENTE") router.replace("/cliente");
+        }
+      }catch{}
+    })();
   }, [router]);
 
   async function onSubmit(e: React.FormEvent){
@@ -26,13 +34,15 @@ export default function LoginPage(){
     setErr(null);
     setLoading(true);
     try{
-      const db = JSON.parse(localStorage.getItem("users_db") || "[]");
-      const found = db.find((u: any) => u.email === email && u.password === password && u.role === role);
-      if (!found) { setErr("Credenciais inválidas ou tipo de conta incorreto."); setLoading(false); return; }
-      const { password: _omit, ...user } = found;
-      localStorage.setItem("auth_user", JSON.stringify(user));
-      try{ window.dispatchEvent(new Event("auth:update")); }catch{}
-      router.push(role === "PRESTADOR" ? "/prestador" : "/cliente");
+      const r = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role })
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) { setErr(data?.error || "Credenciais inválidas"); return; }
+      if (data?.role === "PRESTADOR") router.push("/prestador");
+      else router.push("/cliente");
     }catch{
       setErr("Não foi possível autenticar.");
     }finally{
@@ -42,8 +52,6 @@ export default function LoginPage(){
 
   return (
     <main style={{ maxWidth: 520, margin: "0 auto", padding: 24 }}>
-      
-
       <h1 style={{ marginTop: 12, marginBottom: 6 }}>Entrar</h1>
       <p className="muted" style={{ marginTop: 0 }}>Selecione o tipo de conta e informe suas credenciais.</p>
 
