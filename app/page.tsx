@@ -59,7 +59,7 @@ export default function HomePage(){
         </div>
       </section>
 
-      <section className="grid" aria-label="Categorias de serviços">
+      <section className="grid-cards" aria-label="Categorias de serviços">
         {(q ? filtered : services).map(s => (
           <Link key={s.slug} href={`/servicos/${s.slug}/profissionais`} className="card">
             <span className="icon">{s.emoji}</span>
