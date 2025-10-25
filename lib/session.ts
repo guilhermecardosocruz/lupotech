@@ -27,7 +27,10 @@ export type SessionPayload = {
   exp: number;
 };
 
-export function signSession(payload: Omit<SessionPayload, "iat" | "exp">, maxAgeSeconds = DAYS_30) {
+export function signSession(
+  payload: Omit<SessionPayload, "iat" | "exp">,
+  maxAgeSeconds = DAYS_30
+) {
   const header = { alg: "HS256", typ: "JWT" };
   const now = Math.floor(Date.now() / 1000);
   const full: SessionPayload = { ...payload, iat: now, exp: now + maxAgeSeconds };
@@ -46,7 +49,9 @@ export function verifySession(token: string): SessionPayload | null {
     const [h, p, s] = token.split(".");
     if (!h || !p || !s) return null;
     const data = `${h}.${p}`;
-    const expected = base64url(crypto.createHmac("sha256", getSecret()).update(data).digest());
+    const expected = base64url(
+      crypto.createHmac("sha256", getSecret()).update(data).digest()
+    );
     if (!crypto.timingSafeEqual(Buffer.from(s), Buffer.from(expected))) return null;
 
     const payload = JSON.parse(Buffer.from(p, "base64").toString()) as SessionPayload;
@@ -57,9 +62,12 @@ export function verifySession(token: string): SessionPayload | null {
   }
 }
 
-export function setSessionCookie(payload: Omit<SessionPayload, "iat" | "exp">) {
+export async function setSessionCookie(
+  payload: Omit<SessionPayload, "iat" | "exp">
+) {
   const token = signSession(payload);
-  cookies().set({
+  const c = await cookies();
+  c.set({
     name: COOKIE_NAME,
     value: token,
     httpOnly: true,
@@ -70,8 +78,9 @@ export function setSessionCookie(payload: Omit<SessionPayload, "iat" | "exp">) {
   });
 }
 
-export function clearSessionCookie() {
-  cookies().set({
+export async function clearSessionCookie() {
+  const c = await cookies();
+  c.set({
     name: COOKIE_NAME,
     value: "",
     httpOnly: true,
@@ -82,8 +91,9 @@ export function clearSessionCookie() {
   });
 }
 
-export function readSession(): SessionPayload | null {
-  const token = cookies().get(COOKIE_NAME)?.value;
+export async function readSession(): Promise<SessionPayload | null> {
+  const c = await cookies();
+  const token = c.get(COOKIE_NAME)?.value;
   if (!token) return null;
   return verifySession(token);
 }

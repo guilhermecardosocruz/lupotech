@@ -5,7 +5,7 @@ import { clearSessionCookie } from "../../../../lib/session";
 
 export async function POST() {
   try {
-    await clearSessionCookie();
+    await await clearSessionCookie();
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("logout error", e);
