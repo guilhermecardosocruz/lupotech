@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { readSession } from "@/lib/session";
+import prisma from "../../../../lib/prisma";
+import { readSession } from "../../../../lib/session";
 
 export async function GET() {
   try {

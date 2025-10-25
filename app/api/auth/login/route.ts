@@ -1,8 +1,8 @@
 export const runtime = "nodejs";
 
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
-import { setSessionCookie } from "@/lib/session";
+import prisma from "../../../../lib/prisma";
+import { setSessionCookie } from "../../../../lib/session";
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return NextResponse.json({ error: "Credenciais inválidas" }, { status: 401 });
 
-    // DEMO: passwordHash armazena texto plano (como no register atual)
+    // DEMO: comparando com passwordHash em texto plano (igual ao register atual)
     if (user.passwordHash !== password) {
       return NextResponse.json({ error: "Credenciais inválidas" }, { status: 401 });
     }
