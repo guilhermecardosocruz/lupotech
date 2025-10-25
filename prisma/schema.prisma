@@ -3,9 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Role {
@@ -22,43 +21,41 @@ enum ServiceStatus {
 }
 
 model User {
-  id           String   @id @default(cuid())
-  name         String
-  email        String   @unique
-  phone        String?
-  role         Role
-  passwordHash String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  providerProfile  ProviderProfile?
-  customerRequests ServiceRequest[] @relation("CustomerRequests")
-  providerRequests ServiceRequest[] @relation("ProviderRequests")
+  id                String           @id @default(cuid())
+  name              String
+  email             String           @unique
+  phone             String?
+  role              Role
+  passwordHash      String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  providerProfile   ProviderProfile?
+  customerRequests  ServiceRequest[] @relation("CustomerRequests")
+  providerRequests  ServiceRequest[] @relation("ProviderRequests")
 }
 
 model ProviderProfile {
-  id         String   @id @default(cuid())
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio        String?
-  radiusKm   Int?
-  categories String[]
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  bio         String?
+  categories  String[]
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId])
 }
 
 model ServiceRequest {
-  id          String        @id @default(cuid())
-  category    String
-  description String?
-  scheduledAt DateTime?
-  status      ServiceStatus @default(PENDING)
-  priceMin    Int?
-  priceMax    Int?
-  createdAt   DateTime      @default(now())
-  customerId  String
-  customer    User          @relation("CustomerRequests", fields: [customerId], references: [id], onDelete: Cascade)
-  providerId  String?
-  provider    User?         @relation("ProviderRequests", fields: [providerId], references: [id], onDelete: SetNull)
+  id            String         @id @default(cuid())
+  category      String
+  description   String?
+  scheduledAt   DateTime?
+  status        ServiceStatus  @default(PENDING)
+  priceMin      Int?
+  priceMax      Int?
+  createdAt     DateTime       @default(now())
+  customerId    String
+  customer      User           @relation("CustomerRequests", fields: [customerId], references: [id], onDelete: Cascade)
+  providerId    String?
+  provider      User?          @relation("ProviderRequests", fields: [providerId], references: [id], onDelete: SetNull)
   @@index([customerId])
   @@index([providerId])
   @@index([status, scheduledAt])
