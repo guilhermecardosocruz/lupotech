@@ -8,53 +8,22 @@ import { setSessionCookie } from "../../../../lib/session";
 const NO_STORE = { "Cache-Control": "no-store" } as const;
 
 export async function POST(req: Request) {
-  try {
+  try{
     const { email, password, role } = await req.json().catch(() => ({}));
-    if (!email || !password || !role) {
-      return NextResponse.json(
-        { error: "Dados inválidos" },
-        { status: 400, headers: NO_STORE }
-      );
-    }
+    if (!email || !password || !role)
+      return NextResponse.json({ error: "Dados inválidos" }, { status: 400, headers: NO_STORE });
 
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) {
-      return NextResponse.json(
-        { error: "Credenciais inválidas" },
-        { status: 401, headers: NO_STORE }
-      );
-    }
+    if (!user || user.passwordHash !== password)
+      return NextResponse.json({ error: "Credenciais inválidas" }, { status: 401, headers: NO_STORE });
 
-    // DEMO: comparando com passwordHash em texto plano (igual ao register atual)
-    if (user.passwordHash !== password) {
-      return NextResponse.json(
-        { error: "Credenciais inválidas" },
-        { status: 401, headers: NO_STORE }
-      );
-    }
-    if (user.role !== role) {
-      return NextResponse.json(
-        { error: "Tipo de conta incorreto" },
-        { status: 401, headers: NO_STORE }
-      );
-    }
+    if (user.role !== role)
+      return NextResponse.json({ error: "Tipo de conta incorreto" }, { status: 401, headers: NO_STORE });
 
-    await setSessionCookie({
-      sub: user.id,
-      email: user.email,
-      role: user.role as any,
-      name: user.name,
-    });
-
-    return NextResponse.json(
-      { id: user.id, name: user.name, email: user.email, role: user.role },
-      { status: 200, headers: NO_STORE }
-    );
-  } catch (e) {
+    await setSessionCookie({ sub: user.id, email: user.email, role: user.role as any, name: user.name });
+    return NextResponse.json({ id: user.id, name: user.name, email: user.email, role: user.role }, { headers: NO_STORE });
+  }catch(e){
     console.error("login error", e);
-    return NextResponse.json(
-      { error: "Erro no servidor" },
-      { status: 500, headers: NO_STORE }
-    );
+    return NextResponse.json({ error: "Erro no servidor" }, { status: 500, headers: NO_STORE });
   }
 }
