@@ -1,0 +1,2 @@
+/* encaminha para o CSS global real do app */
+@import "../app/globals.css";

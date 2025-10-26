@@ -1,119 +1,124 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* =========================
-   Tokens e reset leves
-   ========================= */
+/* === Theme tokens === */
 :root{
-  --bg: #f7f8f9;
-  --fg: #0f172a;
-  --muted: #6b7280;
-  --primary: #111827;
-  --accent: #16a34a; /* verde padrão do app */
+  --bg: #f8fafc;        /* slate-50 */
+  --fg: #0f172a;        /* slate-900 */
+  --muted: #6b7280;     /* gray-500 */
   --card: #ffffff;
-  --border: #e5e7eb;
+  --border: #e5e7eb;    /* gray-200 */
+  --accent: #16a34a;    /* green-600 */
+  --accent-600: #16a34a;
+  --accent-700: #15803d;
+  --focus: 0 0 0 3px rgba(22,163,74,.15);
 }
 
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body{
-  margin: 0;
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji","Segoe UI Emoji";
   background: var(--bg);
   color: var(--fg);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* =========================
-   Header / Brand / Nav
-   ========================= */
+/* === App shell === */
 .header{
   position: sticky; top: 0; z-index: 40;
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; padding: 12px 16px;
-  background: #fff; border-bottom: 1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; padding: 10px 16px;
+  background:#fff; border-bottom:1px solid var(--border);
 }
-.brand{ display: flex; align-items: center; gap: 10px; font-weight: 700; }
+.brand{ display:flex; align-items:center; gap:8px; font-weight:700; }
 .brand-badge{
-  display: inline-grid; place-items: center;
-  width: 28px; height: 28px; border-radius: 8px;
-  background: var(--accent); color: #fff; font-weight: 800;
+  display:inline-grid; place-items:center;
+  width:28px; height:28px; border-radius:999px;
+  background: var(--accent-600); color:#fff; font-weight:800;
 }
-.auth-actions{ display: flex; align-items: center; gap: 10px; }
+.auth-actions{ display:flex; gap:10px; }
 
-/* =========================
-   Botões
-   ========================= */
-.btn-solid{
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid var(--accent);
-  background: var(--accent); color: #fff;
-  padding: 10px 12px; border-radius: 10px; font-weight: 600;
-  transition: transform .06s ease, box-shadow .06s ease;
+/* === Buttons === */
+.btn-outline, .btn-solid{
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:8px; font-weight:600; text-decoration:none; cursor:pointer;
+  border-radius:12px; padding:10px 12px; transition: box-shadow .15s, transform .05s;
+  will-change: transform, box-shadow;
 }
-.btn-solid:disabled{ opacity: .6; cursor: not-allowed; }
+.btn-outline{
+  background:#fff; border:1px solid var(--border); color: var(--fg);
+}
+.btn-outline:hover{ box-shadow: 0 2px 6px rgba(0,0,0,.06); }
+.btn-outline:active{ transform: translateY(1px); }
+.btn-solid{
+  background: var(--accent-600); color:#fff; border:1px solid var(--accent-600);
+}
+.btn-solid:hover{ background: var(--accent-700); border-color: var(--accent-700); }
 .btn-solid:active{ transform: translateY(1px); }
 
-.btn-outline{
-  display: inline-flex; align-items: center; justify-content: center;
-  border: 1px solid var(--border);
-  background: #fff; color: var(--primary);
-  padding: 10px 12px; border-radius: 10px; font-weight: 600;
-}
-.btn-outline:hover{ border-color: #cbd5e1; }
-
-/* =========================
-   Tipografia e helpers
-   ========================= */
-h1{ font-size: clamp(1.35rem, 1.2rem + 1vw, 1.8rem); line-height: 1.2; margin: 0; color: var(--primary); }
-.title{ font-weight: 700; margin: 0; color: var(--primary); }
-.muted{ color: var(--muted); }
-
-/* =========================
-   Hero / Busca
-   ========================= */
+/* === Hero / Search === */
+main{ padding: 12px 16px 32px; }
 .hero{
-  max-width: 980px; margin: 0 auto; padding: 24px 16px;
+  max-width: 980px; margin: 0 auto; padding: 12px 0 8px;
 }
 .search-card{
-  display: grid; grid-template-columns: 1fr auto; gap: 10px;
-  border: 1px solid var(--border); background: #fff; border-radius: 16px; padding: 12px;
-  margin-top: 12px;
+  display:flex; gap:10px; margin-top:12px;
+  background:#fff; border:1px solid var(--border); border-radius:16px; padding:8px;
 }
 .search-input{
-  border: 1px solid var(--border); border-radius: 12px; padding: 12px; outline: none;
+  flex:1; border:1px solid var(--border); border-radius:12px; padding:12px;
+  outline:none; background:#fff;
 }
-.search-input:focus{ border-color: #cbd5e1; }
+.search-input:focus{ box-shadow: var(--focus); border-color: var(--accent-600); }
 .search-btn{ composes: btn-solid; }
 
-/* =========================
-   Cards / Grids
-   ========================= */
-.card{
-  display: flex; gap: 10px; align-items: center;
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 14px; padding: 12px; text-decoration: none;
-}
-.card:hover{ border-color: #d1d5db; }
-
-.icon{
-  width: 42px; height: 42px; display: grid; place-items: center;
-  font-size: 24px; border-radius: 10px; background: #f1f5f9;
-}
-
-/* Evita colisão com a utilidade Tailwind "grid" */
-.grid-cards{
-  display: grid;
+/* === Grid & Cards === */
+.grid{
+  max-width: 1100px; margin: 12px auto 0; padding: 4px;
+  display:grid; gap:12px;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-  max-width: 980px; margin: 18px auto 0; padding: 0 16px 8px;
+}
+.card{
+  display:flex; gap:10px; align-items:flex-start;
+  padding:12px; border:1px solid var(--border); background: var(--card);
+  border-radius:14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.04);
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+}
+.card:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.05);
+  border-color: #d1d5db;
+}
+.icon{
+  width:42px; height:42px; border-radius:12px;
+  display:grid; place-items:center;
+  background:#f1f5f9; /* slate-100 */
+  font-size:22px;
+}
+.title{ margin:0 0 2px 0; font-weight:700; line-height:1.2; }
+.muted{ margin:0; color: var(--muted); }
+
+/* === Sections / Articles === */
+section.card, article.card { /* quando card é usado como container */
+  align-items:center;
 }
 
-/* =========================
-   Footer
-   ========================= */
-.footer{
-  max-width: 980px; margin: 26px auto; padding: 12px 16px;
-  color: var(--muted); font-size: 13px;
+/* === Form elements === */
+label{ color:#0f172a; }
+input, select, textarea{
+  font: inherit;
 }
+textarea:focus, select:focus, input:focus{
+  outline: none; box-shadow: var(--focus); border-color: var(--accent-600);
+}
+
+/* === Footer === */
+.footer{
+  max-width: 1100px; margin: 22px auto 0; color: var(--muted); font-size: 13px;
+}
+
+/* === Utilities === */
+.flex{ display:flex; } .items-center{ align-items:center; } .justify-between{ justify-content:space-between; }
+
+/* Ensure links inside cards keep block hit area */
+a.card{ text-decoration:none; color: inherit; }
