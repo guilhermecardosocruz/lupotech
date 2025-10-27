@@ -131,3 +131,38 @@ a.card{ text-decoration:none; color: inherit; }
 @media (min-width: 1024px){
   .grid--list{ grid-template-columns: 1fr !important; }
 }
+
+/* === Força layout de LISTA (como no logado) === */
+.grid--list{
+  grid-template-columns: 1fr !important;
+  gap: 10px !important;
+}
+
+/* Cards em linha: ícone à esquerda, conteúdo ao lado, altura confortável */
+.grid.grid--list .card{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.grid.grid--list .card .icon{
+  width: 44px; height: 44px; border-radius: 12px;
+  font-size: 22px;
+}
+
+.grid.grid--list .card .title{
+  font-weight: 700; margin: 0 0 2px 0;
+}
+
+.grid.grid--list .card .muted{
+  margin: 0; color: var(--muted);
+}
+
+/* Hover sutil como no logado */
+.grid.grid--list .card:hover{
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  border-color: #e5e7eb;
+}
