@@ -42,47 +42,35 @@ body{
   display:inline-flex; align-items:center; justify-content:center;
   gap:8px; font-weight:600; text-decoration:none; cursor:pointer;
   border-radius:12px; padding:10px 12px; transition: box-shadow .15s, transform .05s;
-  will-change: transform, box-shadow;
 }
-.btn-outline{
-  background:#fff; border:1px solid var(--border); color: var(--fg);
-}
+.btn-outline{ background:#fff; border:1px solid var(--border); color: var(--fg); }
 .btn-outline:hover{ box-shadow: 0 2px 6px rgba(0,0,0,.06); }
 .btn-outline:active{ transform: translateY(1px); }
-.btn-solid{
-  background: var(--accent-600); color:#fff; border:1px solid var(--accent-600);
-}
+.btn-solid{ background: var(--accent-600); color:#fff; border:1px solid var(--accent-600); }
 .btn-solid:hover{ background: var(--accent-700); border-color: var(--accent-700); }
 .btn-solid:active{ transform: translateY(1px); }
 
 /* === Hero / Search === */
 main{ padding: 12px 16px 32px; }
-.hero{
-  max-width: 980px; margin: 0 auto; padding: 12px 0 8px;
-}
-.search-card{
-  display:flex; gap:10px; margin-top:12px;
-  background:#fff; border:1px solid var(--border); border-radius:16px; padding:8px;
-}
-.search-input{
-  flex:1; border:1px solid var(--border); border-radius:12px; padding:12px;
-  outline:none; background:#fff;
-}
+.hero{ max-width: 1100px; margin: 0 auto; padding: 12px 0 8px; }
+.search-card{ display:flex; gap:10px; margin-top:12px; background:#fff; border:1px solid var(--border); border-radius:16px; padding:8px; }
+.search-input{ flex:1; border:1px solid var(--border); border-radius:12px; padding:12px; outline:none; background:#fff; }
 .search-input:focus{ box-shadow: var(--focus); border-color: var(--accent-600); }
-.search-btn{ composes: btn-solid; }
 
-/* === Grid & Cards === */
+/* === Grid (GRADE RESPONSIVA) === */
 .grid{
   max-width: 1100px; margin: 12px auto 0; padding: 4px;
   display:grid; gap:12px;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
+
+/* === Card em grade (estilo do seu print) === */
 .card{
-  display:flex; gap:10px; align-items:flex-start;
-  padding:12px; border:1px solid var(--border); background: var(--card);
-  border-radius:14px;
+  display:flex; gap:12px; align-items:flex-start;
+  padding:14px; border:1px solid var(--border); background: var(--card);
+  border-radius:16px;
   box-shadow: 0 1px 2px rgba(0,0,0,.04);
-  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+  transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease, background .12s ease;
 }
 .card:hover{
   transform: translateY(-1px);
@@ -90,79 +78,19 @@ main{ padding: 12px 16px 32px; }
   border-color: #d1d5db;
 }
 .icon{
-  width:42px; height:42px; border-radius:12px;
+  width:44px; height:44px; border-radius:12px;
   display:grid; place-items:center;
   background:#f1f5f9; /* slate-100 */
   font-size:22px;
 }
 .title{ margin:0 0 2px 0; font-weight:700; line-height:1.2; }
 .muted{ margin:0; color: var(--muted); }
-
-/* === Sections / Articles === */
-section.card, article.card { /* quando card é usado como container */
-  align-items:center;
-}
-
-/* === Form elements === */
-label{ color:#0f172a; }
-input, select, textarea{
-  font: inherit;
-}
-textarea:focus, select:focus, input:focus{
-  outline: none; box-shadow: var(--focus); border-color: var(--accent-600);
-}
-
-/* === Footer === */
-.footer{
-  max-width: 1100px; margin: 22px auto 0; color: var(--muted); font-size: 13px;
-}
-
-/* === Utilities === */
-.flex{ display:flex; } .items-center{ align-items:center; } .justify-between{ justify-content:space-between; }
-
-/* Ensure links inside cards keep block hit area */
 a.card{ text-decoration:none; color: inherit; }
 
-/* === Variant: lista em largura total (usa o visual do logado) === */
-.grid--list{
-  grid-template-columns: 1fr !important;  /* força 1 coluna */
-  gap: 12px;
-}
-@media (min-width: 1024px){
-  .grid--list{ grid-template-columns: 1fr !important; }
-}
+/* === Footer === */
+.footer{ max-width: 1100px; margin: 22px auto 0; color: var(--muted); font-size: 13px; }
 
-/* === Força layout de LISTA (como no logado) === */
-.grid--list{
-  grid-template-columns: 1fr !important;
-  gap: 10px !important;
-}
-
-/* Cards em linha: ícone à esquerda, conteúdo ao lado, altura confortável */
-.grid.grid--list .card{
-  display: grid;
-  grid-template-columns: auto 1fr;
-  align-items: center;
-  padding: 12px 14px;
-  border-radius: 12px;
-}
-
-.grid.grid--list .card .icon{
-  width: 44px; height: 44px; border-radius: 12px;
-  font-size: 22px;
-}
-
-.grid.grid--list .card .title{
-  font-weight: 700; margin: 0 0 2px 0;
-}
-
-.grid.grid--list .card .muted{
-  margin: 0; color: var(--muted);
-}
-
-/* Hover sutil como no logado */
-.grid.grid--list .card:hover{
-  transform: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04);
-  border-color: #e5e7eb;
-}
+/* === Form focus === */
+label{ color:#0f172a; }
+input, select, textarea{ font: inherit; }
+textarea:focus, select:focus, input:focus{ outline: none; box-shadow: var(--focus); border-color: var(--accent-600); }
