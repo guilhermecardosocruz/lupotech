@@ -122,3 +122,12 @@ textarea:focus, select:focus, input:focus{
 
 /* Ensure links inside cards keep block hit area */
 a.card{ text-decoration:none; color: inherit; }
+
+/* === Variant: lista em largura total (usa o visual do logado) === */
+.grid--list{
+  grid-template-columns: 1fr !important;  /* força 1 coluna */
+  gap: 12px;
+}
+@media (min-width: 1024px){
+  .grid--list{ grid-template-columns: 1fr !important; }
+}
