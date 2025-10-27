@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useMemo, useState, useEffect } from "react";
 
 type Service = { name: string; emoji: string; hint: string; slug: string };
 
@@ -35,24 +34,17 @@ function toSlug(s: string){
 }
 
 export default function ClienteHome(){
-  const router = useRouter();
-
-  useEffect(() => {
-    let cancelled = false;
+  useEffect(()=>{ // guard simples
     (async () => {
-      try {
+      try{
         const r = await fetch("/api/auth/me", { cache: "no-store" });
-        if (!r.ok) { router.replace("/login"); return; }
+        if (!r.ok) location.replace("/login");
         const j = await r.json().catch(()=>null);
-        if (!j?.user) { router.replace("/login"); return; }
-        if (j.user.role !== "CLIENTE") { router.replace("/prestador"); return; }
-      } catch {
-        router.replace("/login");
-      }
-      if (cancelled) return;
+        if (!j?.user) location.replace("/login");
+        if (j?.user?.role !== "CLIENTE") location.replace("/prestador");
+      }catch{ location.replace("/login"); }
     })();
-    return () => { cancelled = true; };
-  }, [router]);
+  }, []);
 
   const [q, setQ] = useState("");
   const services = useMemo<Service[]>(
